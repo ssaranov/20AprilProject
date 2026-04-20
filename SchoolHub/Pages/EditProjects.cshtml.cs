@@ -18,6 +18,8 @@ namespace SchoolHub.Pages
         [BindProperty]
         public string Description { get; set; } = string.Empty;
         [BindProperty]
+        public string Status { get; set; } = "Идея";
+        [BindProperty]
         public string Category { get; set; } = string.Empty;
         public string Message { get; set; } = string.Empty;
         public List<string> Categories { get; } = new()
@@ -30,13 +32,21 @@ namespace SchoolHub.Pages
             "Дизайн",
             "Другое"
         };
+
+
+        public List<string> Statuses { get; set; } = new()
+        {
+            "Идея",
+            "В разработке",
+            "Завершен"
+        };
         public IActionResult OnGet(int id)
         {
             var userId = HttpContext.Session.GetInt32("UserId");
 
             if (userId == null) 
             {
-                return RedirectToPage("/Idet");
+                return RedirectToPage("/Index");
             }
             var project = _context.Projects.FirstOrDefault(p => p.Id == id);
             if (project == null)
@@ -48,10 +58,18 @@ namespace SchoolHub.Pages
             {
                 return RedirectToPage("/Projects");
             }
+
+            if (project.Status == "Завершён")
+            {
+                return RedirectToPage("/MyProjects");
+            }
+
             Id = userId.Value;
             Title = project.Title;
             Description = project.Description;
             Category = project.Category;
+            Status = project.Status;
+
             return Page();
         }
 
@@ -60,13 +78,14 @@ namespace SchoolHub.Pages
             var userId = HttpContext.Session.GetInt32("UserId");
             if (userId == null)
             {
-                return RedirectToPage("/Idet");
+                return RedirectToPage("/Index");
             }
             if(string.IsNullOrWhiteSpace(Title) ||
                 string.IsNullOrWhiteSpace(Description) ||
-                string.IsNullOrWhiteSpace(Category)) 
+                string.IsNullOrWhiteSpace(Category) ||
+                string.IsNullOrWhiteSpace(Status))
             {
-                Message = "Заполните все поля";
+                Message = "Заполните все поля" + Title + "|" + Description + "|" + Category + "|" + Status;
                 return Page();
             }
             var project = _context.Projects.FirstOrDefault(p => p.Id == Id);
@@ -79,9 +98,14 @@ namespace SchoolHub.Pages
             {
                 return RedirectToPage("/Projects");
             }
+            if (project.Status == "Завершён")
+            {
+                return RedirectToPage("/MyProjects");
+            }
 
             project.Title = Title;
             project.Description = Description;
+            project.Status = Status;
             project.Category = Category;
             _context.SaveChanges();
 

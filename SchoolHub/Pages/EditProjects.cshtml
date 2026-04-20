@@ -1,7 +1,57 @@
 ﻿@page
 @model SchoolHub.Pages.EditProjectsModel
 @{
+	ViewData["Title"] = "Редактировать проекта";
 }
+
+<div class="container mt-5">
+	<div class="row justify-content-center">
+		<div class="col-md-8">
+			<h1>Редактирование проекта</h1>
+			@if(!string.IsNullOrEmpty(Model.Message))
+			{
+				<div class="alert alert-warning">
+					@Model.Message
+				</div>
+			}
+			<form method="post">
+				<input asp-formaction="Id" type="hidden" />
+				<div class="mb-3">
+					<label class="form-label">Название проекта</label>
+					<input asp-for="Title" class="form-control" />
+				</div>
+				<div class="mb-3">
+					<label class="form-label">Описание</label>
+					<input asp-for="Description" class="form-control" />
+				</div>
+				<div class="mb-3">
+					<label class="form-label">Категория</label>
+					<select asp-for="Category" class="form-control">
+						<option value="">Выберите категорию</option>
+						@foreach(var category in Model.Categories)
+						{
+							<option value="@category">@category</option>
+						}
+					</select>
+					<div class="mb-3">
+					<label class="form-label">Статус</label>
+					<select asp-for="Status" class="form-control">
+						<option value="">Выберите категорию</option>
+							@foreach (var status in Model.Statuses)
+							{
+								<option value="@status">@status</option>
+							}
+					</select>
+					<div class="d-flex gap-2">
+						<button type="submit" class="btn btn-success">Сохранить</button>
+						
+						<a asp-asp-page="/MyProjects" class="btn btn-secondary">Отмена</a>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
 
 
 
