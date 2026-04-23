@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using SchoolHub.Data;
 using SchoolHub.Models;
+using SchoolHub.Service;
 
 namespace SchoolHub.Pages
 {
@@ -10,10 +11,12 @@ namespace SchoolHub.Pages
     {
         private readonly AppDbContext _context;
         private readonly PasswordHasher<User> _passeordHasher;
-        public IndexModel(AppDbContext context)
+        private readonly ICurrentUserService _currentUserService;
+        public IndexModel(AppDbContext context,ICurrentUserService currentUserService)
         {
             _context = context;
             _passeordHasher = new PasswordHasher<User>();
+            _currentUserService = currentUserService;
         }
         [BindProperty]
         public string RegisterName { get; set; } = string.Empty;
@@ -80,7 +83,9 @@ namespace SchoolHub.Pages
             _context.Users.Add(user);
             _context.SaveChanges();
 
-            HttpContext.Session.SetInt32("UserId", user.Id);
+            _currentUserService.SignIn(HttpContext, user.Id);
+
+            //HttpContext.Session.SetInt32("UserId", user.Id);
 
             return RedirectToPage();
         }
@@ -112,25 +117,23 @@ namespace SchoolHub.Pages
                 return Page();
             }
 
-            HttpContext.Session.SetInt32("UserId", user.Id);
+            //HttpContext.Session.SetInt32("UserId", user.Id);
+            _currentUserService.SignIn(HttpContext, user.Id);
 
             return RedirectToPage();
         }
         public IActionResult OnPostLogout()
         {
-            HttpContext.Session.Clear();
+            //HttpContext.Session.Clear();
+            _currentUserService.SignOut(HttpContext);
             return RedirectToPage();
         }
         private void LoadUser() 
         {
-            var userId = HttpContext.Session.GetInt32("UserId");
-            if(userId == null) 
-            {
-                IsAuthorized = false;
-                return;
-            }
-
-            var user = _context.Users.FirstOrDefault(u => u.Id == userId.Value);
+            //HttpContext.Session.Clear();
+            //var userId = HttpContext.Session.GetInt32("UserId");
+        
+            var user = _currentUserService.GetCurrentUser(HttpContext);
 
             if (user == null)
             {
