@@ -79,7 +79,7 @@ namespace SchoolHub.Pages
 
         private void LoadProjects() 
         {
-            Projects = _projectService.GetAllProjects();
+            Projects = _projectService.GetProjects();
             TotalProjectsCount = Projects.Count;
         }
     }

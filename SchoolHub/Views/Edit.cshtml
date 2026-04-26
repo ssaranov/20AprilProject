@@ -1,0 +1,82 @@
+﻿@model List<SchoolHub.Models.Project>
+
+@{
+    ViewData["Title"] = "редакт проекта";
+    var categories = new List<string>
+    {
+    "программирование",
+    "робототехника",
+    "игры",
+    "Сайт",
+    "Мобильные игры",
+    "дизайн",
+    "другое"
+    };
+
+    var status = new List<string>
+    {
+    "Идея",
+    "В разработке",
+    "завершен"
+    };
+}
+<div class="container mt-5">
+    <div class = "row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h1 class="mb-4">Редактирование через mvc</h1>
+                    <form asp-contoller="AdminProjects">
+                        asp-action="Edit"
+                        method="post">
+
+                        @Html.AntiForgeryToken();
+                        <input asp-for="Id" type="hidden" />
+                        <div class="mb-3">
+                            <label asp-for="Title" class ="form-label">Название</label>
+                            <input asp-for="Title" class = "form-contol" />
+                            <span asp-validation-for="Title" class = "text-danger"></span>
+                        </div>
+                  
+                        <div class="mb-3">
+                            <label asp-for="Description" class ="form-label">Описание</label>
+                            <textarea asp-for="Description" class = "form-contol" rows="5"></textarea> />
+                            <span asp-validation-for="Title" class = "text-danger"></span>
+                        </div>
+                         <div class="mb-3">
+                            <label asp-for="Category" class ="form-label">категория</label>
+                            <select asp-for="Category" class="form-select">
+                                <option value="">Выберите категорию</option>
+                                @foreach(var vategory in categories)
+                                {
+                                    <option value="categories">@categories</option>
+                                }
+                            </select>
+                            <span asp-validation-for="Category" class = "text-danger"></span>
+                        </div>
+
+                         <div class="mb-3">
+                            <label asp-for="Status" class ="form-label">Статус</label>
+                            <select asp-for="Status" class="form-select">
+                                <option value="">Выберите статус</option>
+                                @foreach (var vategory in categories)
+                                {
+                                        <option value="status">@status</option>
+                                }
+                            </select>
+                            <span asp-validation-for="Status" class = "text-danger"></span>
+                        </div>
+
+                        <div class="f-flex gap-2">
+                            <button type="submit" class="btn btn-success">
+                                Сохранить
+                            </button>
+
+                            <a asp-contoller="AdminProjects" asp-action="Index" class = "btn btn-secondary">Отмена</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

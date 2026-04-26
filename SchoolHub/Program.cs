@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using SchoolHub.Data;
 using SchoolHub.Middleware;
 using SchoolHub.Service;
@@ -7,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite("Data Source=app.db"));
@@ -22,7 +25,7 @@ builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 builder.Services.AddScoped<IProjectService, ProjectService>();
 
 
-var app = builder.Build();
+var app = builder.Build();  
 
 
 
@@ -48,6 +51,7 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapStaticAssets();
+app.MapControllerRoute(name: "default", pattern: "{contoller=AdminProjects}/{action=Index}/{id?}");
 app.MapRazorPages()
    .WithStaticAssets();
 

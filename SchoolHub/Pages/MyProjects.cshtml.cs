@@ -23,7 +23,7 @@ namespace SchoolHub.Pages
         public string CurrentUserName { get; set; }
         public IActionResult OnGet()
         {
-            var userId = _currentUserService
+            var userId = _currentUserService;
             if(userId == null)
             {
                 return RedirectToPage("/index");
